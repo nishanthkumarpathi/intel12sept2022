@@ -10,5 +10,11 @@ jobs:
     name: Build Job
     runs-on: ubuntu-latest
     steps:
-      - name: Print Statement
-        run: echo "Hello, All, I am Github Runner"
+      - name: Print the Runner Details
+        run: |
+          cat /etc/os-release
+          echo "---------------"
+          uname -a
+          echo "---------------"
+          echo "Print the List of Files"
+          ls -la
