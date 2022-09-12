@@ -30,6 +30,12 @@ jobs:
         run: |
           echo "This is a test file" > test.txt
           cat test.txt
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-artifact
+          path: test.txt
       
   deploy:
     name: Deploy Job
@@ -38,3 +44,9 @@ jobs:
     steps:
       - name: Verify the test.txt file
         run: cat test.txt
+
+      - name: Download Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: test-artifact
+          path: test.txt
