@@ -19,8 +19,6 @@ jobs:
           pwd
           echo "Print the List of Files"
           ls -la
-          echo "Print the Files in the Folder"
-          ls -la intel12sept2022
 
       - name: Define Variables
         run: echo $POSTGRES_PASSWORD
