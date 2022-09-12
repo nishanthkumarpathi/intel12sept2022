@@ -21,3 +21,22 @@ jobs:
           ls -la
           echo "Print the Files in the Folder"
           ls -la intel12sept2022
+
+      - name: Define Variables
+        run: echo $POSTGRES_PASSWORD
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+
+      - name: Creating a File
+        run: |
+          echo "This is a test file" > test.txt
+          cat test.txt
+      
+  deploy:
+    name: Deploy Job
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Verify the test.txt file
+        run: cat test.txt
