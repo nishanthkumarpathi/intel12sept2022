@@ -10,11 +10,14 @@ jobs:
     name: Build Job
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout the Code
+        uses: actions/checkout@v2.4.2
+
       - name: Print the Runner Details
         run: |
-          cat /etc/os-release
-          echo "---------------"
-          uname -a
-          echo "---------------"
+          echo "Current Working Directory: $PWD"
+          pwd
           echo "Print the List of Files"
           ls -la
+          echo "Print the Files in the Folder"
+          ls -la intel12sept2022
