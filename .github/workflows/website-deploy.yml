@@ -47,7 +47,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: test-artifact
-          path: test.txt
 
       - name: Verify the test file
         run: | 
