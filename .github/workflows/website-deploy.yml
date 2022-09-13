@@ -49,5 +49,9 @@ jobs:
           name: test-artifact
           path: test.txt
 
+      - name: Verify the test file
+        run: | 
+          ls -la
+
       - name: Verify the test.txt file
         run: cat test.txt
