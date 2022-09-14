@@ -17,6 +17,9 @@ jobs:
       - name: Checkout the Code
         uses: actions/checkout@v2.4.2
 
+      - name: Zip the Files
+        run: echo "Zip the Files"
+
       - name: Method 1 - for index.html
         run: |
           echo "$SERVER_PRIVATE_KEY" > key.pem
