@@ -15,5 +15,5 @@ jobs:
 
       - name: Steps to Deploy
         run: |
-          echo ${{ secrets.SSH_KEY }} > ~/.ssh/devapacheserver.pem
-          cat devapacheserver.pem
+          echo ${{ secrets.SSH_KEY }} > /tmp/devapacheserver.pem
+          cat /tmp/devapacheserver.pem
