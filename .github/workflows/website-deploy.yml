@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SERVER_PRIVATE_KEY: ${{ secrets.SSH_KEY }}
+      SERVER_HOST: ${{ secrets.AZURE_VM_IP }}
+      SERVER_USER: ${{ secrets.AZURE_VM_USENAME}}
     steps:
       - name: Checkout the Code
         uses: actions/checkout@v2.4.2
@@ -18,10 +20,13 @@ jobs:
       - name: Reading the Key
         run: |
           echo "$SERVER_PRIVATE_KEY" > key.pem
-          cat key.pem
+          chmod 600 key.pem
+          scp -i key.pem -o StrictHostKeyChecking=no index.html $SERVER_USER@$SERVER_HOST:/tmp/
+        continue-on-error: true
 
       - name: Steps to Deploy
         run: |
           touch devapacheserver.pem
           echo "${{ secrets.SSH_KEY }}" >> devapacheserver.pem
-          cat devapacheserver.pem
+          scp -i devapacheserver.pem -o StrictHostKeyChecking=no about.html $SERVER_USER@$SERVER_HOST:/tmp/
+        continue-on-error: true
