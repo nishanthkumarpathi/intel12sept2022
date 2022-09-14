@@ -17,16 +17,17 @@ jobs:
       - name: Checkout the Code
         uses: actions/checkout@v2.4.2
 
-      - name: Reading the Key
+      - name: Method 1 - for index.html
         run: |
           echo "$SERVER_PRIVATE_KEY" > key.pem
           chmod 600 key.pem
           scp -i key.pem -o StrictHostKeyChecking=no index.html $SERVER_USER@$SERVER_HOST:/tmp/
         continue-on-error: true
 
-      - name: Steps to Deploy
+      - name: Method 2 - for about.html
         run: |
           touch devapacheserver.pem
           echo "${{ secrets.SSH_KEY }}" >> devapacheserver.pem
+          chmod 600 devapacheserver.pem
           scp -i devapacheserver.pem -o StrictHostKeyChecking=no about.html $SERVER_USER@$SERVER_HOST:/tmp/
         continue-on-error: true
