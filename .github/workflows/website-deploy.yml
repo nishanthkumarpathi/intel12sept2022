@@ -22,12 +22,15 @@ jobs:
           echo "$SERVER_PRIVATE_KEY" > key.pem
           chmod 600 key.pem
           scp -i key.pem -o StrictHostKeyChecking=no index.html $SERVER_USER@$SERVER_HOST:/tmp/
+          ssh -i key.pem -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_HOST "sudo mv /tmp/index.html /var/www/html/index.html"
         continue-on-error: true
 
-      - name: Method 2 - for about.html
-        run: |
-          touch devapacheserver.pem
-          echo "${{ secrets.SSH_KEY }}" >> devapacheserver.pem
-          chmod 600 devapacheserver.pem
-          scp -i devapacheserver.pem -o StrictHostKeyChecking=no about.html $SERVER_USER@$SERVER_HOST:/tmp/
-        continue-on-error: true
+
+
+      # - name: Method 2 - for about.html
+      #   run: |
+      #     touch devapacheserver.pem
+      #     echo "${{ secrets.SSH_KEY }}" >> devapacheserver.pem
+      #     chmod 600 devapacheserver.pem
+      #     scp -i devapacheserver.pem -o StrictHostKeyChecking=no about.html $SERVER_USER@$SERVER_HOST:/tmp/
+      #   continue-on-error: true
