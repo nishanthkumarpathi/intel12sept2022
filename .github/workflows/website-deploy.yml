@@ -1,0 +1,19 @@
+name: Simple Web Application Deployment
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    name: Deploy to Apache Web Server on Azure
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the Code
+        uses: actions/checkout@v2.4.2
+
+      - name: Steps to Deploy
+        run: |
+          echo ${{ secrets.SSH_KEY }} > ~/.ssh/devapacheserver.pem
+          cat devapacheserver.pem
