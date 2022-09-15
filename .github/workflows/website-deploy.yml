@@ -17,21 +17,21 @@ jobs:
       - name: Checkout the Code
         uses: actions/checkout@v2.4.2
 
-      - name: Zip the Files
-        run: |
-          echo "Zip the Files"
-          tar -cvzf website.tar.gz src
+      # - name: Zip the Files
+      #   run: |
+      #     echo "Zip the Files"
+      #     tar -cvzf website.tar.gz src
 
 
-      - name: Method 1 - for index.html
-        run: |
-          echo "$SERVER_PRIVATE_KEY" > key.pem
-          chmod 600 key.pem
-          scp -i key.pem -o StrictHostKeyChecking=no website.tar.gz $SERVER_USER@$SERVER_HOST:/tmp/
-          scp -i key.pem -o StrictHostKeyChecking=no movefiles.sh $SERVER_USER@$SERVER_HOST:/tmp/
-          ssh -i key.pem -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_HOST 'chmod +x /tmp/movefiles.sh'
-          ssh -i key.pem -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_HOST '/tmp/movefiles.sh'
-        continue-on-error: true
+      # - name: Method 1 - for index.html
+      #   run: |
+      #     echo "$SERVER_PRIVATE_KEY" > key.pem
+      #     chmod 600 key.pem
+      #     scp -i key.pem -o StrictHostKeyChecking=no website.tar.gz $SERVER_USER@$SERVER_HOST:/tmp/
+      #     scp -i key.pem -o StrictHostKeyChecking=no movefiles.sh $SERVER_USER@$SERVER_HOST:/tmp/
+      #     ssh -i key.pem -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_HOST 'chmod +x /tmp/movefiles.sh'
+      #     ssh -i key.pem -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_HOST '/tmp/movefiles.sh'
+      #   continue-on-error: true
 
       - name: Copy the Public Folder to Ubuntu
         uses: marcodallasanta/ssh-scp-deploy@v1.2.0
