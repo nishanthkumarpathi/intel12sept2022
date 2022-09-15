@@ -25,7 +25,7 @@ jobs:
           pre_upload: sudo rm -rf /var/www/html/*
           post_upload: sudo mv /tmp/src/* /var/www/html/
 
-  testing-health-check:
+  testing-application-health-check:
     name: Testing the Deployed Web Server
     runs-on: ubuntu-latest
     needs: [devdeploy]
@@ -33,10 +33,18 @@ jobs:
       - name: Using Wget we will Download the File
         run: wget -qO- ${{secrets.AZURE_VM_IP}}/index.html | grep -iq "github"
 
-  proddeploy:
-    name: Deploy to Apache Web Server on Azure
+  testing-network-health-check:
+    name: Testing the Deployed Web Server
     runs-on: ubuntu-latest
-    needs: [testing-health-check]
+    needs: [devdeploy]
+    steps:
+      - name: Using NetCat we will Check the Port
+        run: nc -zv ${{secrets.AZURE_VM_IP}} 80
+
+  proddeploy:
+    name: Prod Env Deployment
+    runs-on: ubuntu-latest
+    needs: [testing-application-health-check, testing-network-health-check]
     steps:
       - name: Checkout the Code
         uses: actions/checkout@v2.4.2
