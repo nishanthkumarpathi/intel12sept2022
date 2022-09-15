@@ -33,6 +33,19 @@ jobs:
           ssh -i key.pem -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_HOST '/tmp/movefiles.sh'
         continue-on-error: true
 
+      - name: Copy the Public Folder to Ubuntu
+        uses: marcodallasanta/ssh-scp-deploy@v1.2.0
+        with:
+          local: 'src/*'
+          remote: '/var/www/html/'
+          host: ${{secrets.AZURE_VM_IP}}
+          user: ${{secrets.AZURE_VM_USENAME}}
+          key: ${{secrets.SSH_KEY}}
+          ssh_options: -o StrictHostKeyChecking=no
+          #pre_upload: sudo rm -rf /var/www/html/*
+          #post_upload: ls -la ~/public
+          #post_upload: sudo mv ~/public/* /var/www/html/
+
       # - name: Method 1 - for index.html
       #   run: |
       #     echo "$SERVER_PRIVATE_KEY" > key.pem
