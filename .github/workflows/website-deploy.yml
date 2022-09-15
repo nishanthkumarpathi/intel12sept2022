@@ -6,13 +6,9 @@ on:
       - master
 
 jobs:
-  deploy:
-    name: Deploy to Apache Web Server on Azure
+  devdeploy:
+    name: Dev Env Deployment
     runs-on: ubuntu-latest
-    env:
-      SERVER_PRIVATE_KEY: ${{ secrets.SSH_KEY }}
-      SERVER_HOST: ${{ secrets.AZURE_VM_IP }}
-      SERVER_USER: ${{ secrets.AZURE_VM_USENAME}}
     steps:
       - name: Checkout the Code
         uses: actions/checkout@v2.4.2
@@ -29,12 +25,33 @@ jobs:
           pre_upload: sudo rm -rf /var/www/html/*
           post_upload: sudo mv /tmp/src/* /var/www/html/
 
-  testing:
+  testing-health-check:
     name: Testing the Deployed Web Server
     runs-on: ubuntu-latest
+    needs: [deploy]
     steps:
       - name: Using Wget we will Download the File
-        run: wget -qO- ${{secrets.AZURE_VM_IP}}/index.html | grep -q "github"
+        run: wget -qO- ${{secrets.AZURE_VM_IP}}/index.html | grep -iq "github"
+
+  proddeploy:
+    name: Deploy to Apache Web Server on Azure
+    runs-on: ubuntu-latest
+    needs: [testing-health-check]
+    steps:
+      - name: Checkout the Code
+        uses: actions/checkout@v2.4.2
+
+      - name: Copy the Public Folder to Ubuntu
+        uses: marcodallasanta/ssh-scp-deploy@v1.2.0
+        with:
+          local: 'src/*'
+          remote: '/tmp/src/'
+          host: ${{secrets.PROD_AZURE_SERVER_IP}}
+          user: ${{secrets.AZURE_VM_USENAME}}
+          key: ${{secrets.SSH_KEY}}
+          ssh_options: -o StrictHostKeyChecking=no
+          pre_upload: sudo rm -rf /var/www/html/*
+          post_upload: sudo mv /tmp/src/* /var/www/html/
 
       # - name: Zip the Files
       #   run: |
