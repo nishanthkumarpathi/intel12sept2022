@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "unzip the Folder"
+echo "untar the Folder"
 
 cd /tmp
 
