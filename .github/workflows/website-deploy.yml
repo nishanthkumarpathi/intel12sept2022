@@ -17,6 +17,25 @@ jobs:
       - name: Checkout the Code
         uses: actions/checkout@v2.4.2
 
+      - name: Copy the Public Folder to Ubuntu
+        uses: marcodallasanta/ssh-scp-deploy@v1.2.0
+        with:
+          local: 'src/*'
+          remote: '/tmp/src/'
+          host: ${{secrets.AZURE_VM_IP}}
+          user: ${{secrets.AZURE_VM_USENAME}}
+          key: ${{secrets.SSH_KEY}}
+          ssh_options: -o StrictHostKeyChecking=no
+          pre_upload: sudo rm -rf /var/www/html/*
+          post_upload: sudo mv /tmp/src/* /var/www/html/
+
+  testing:
+    name: Testing the Deployed Web Server
+    runs-on: ubuntu-latest
+    steps:
+      - name: Using Wget we will Download the File
+        run: wget -qO- ${{secrets.AZURE_VM_IP}}/index.html | grep -q "github"
+
       # - name: Zip the Files
       #   run: |
       #     echo "Zip the Files"
@@ -33,18 +52,7 @@ jobs:
       #     ssh -i key.pem -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_HOST '/tmp/movefiles.sh'
       #   continue-on-error: true
 
-      - name: Copy the Public Folder to Ubuntu
-        uses: marcodallasanta/ssh-scp-deploy@v1.2.0
-        with:
-          local: 'src/*'
-          remote: '/tmp/src/'
-          host: ${{secrets.AZURE_VM_IP}}
-          user: ${{secrets.AZURE_VM_USENAME}}
-          key: ${{secrets.SSH_KEY}}
-          ssh_options: -o StrictHostKeyChecking=no
-          pre_upload: sudo rm -rf /var/www/html/*
-          #post_upload: ls -la ~/public
-          post_upload: sudo mv /tmp/src/* /var/www/html/
+
 
       # - name: Method 1 - for index.html
       #   run: |
