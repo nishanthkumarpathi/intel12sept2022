@@ -28,7 +28,7 @@ jobs:
   testing-health-check:
     name: Testing the Deployed Web Server
     runs-on: ubuntu-latest
-    needs: [deploy]
+    needs: [devdeploy]
     steps:
       - name: Using Wget we will Download the File
         run: wget -qO- ${{secrets.AZURE_VM_IP}}/index.html | grep -iq "github"
