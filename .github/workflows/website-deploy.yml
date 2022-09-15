@@ -26,7 +26,7 @@ jobs:
           post_upload: sudo mv /tmp/src/* /var/www/html/
 
   testing-application-health-check:
-    name: Testing the Deployed Web Server
+    name: Application Health Check
     runs-on: ubuntu-latest
     needs: [devdeploy]
     steps:
@@ -34,7 +34,7 @@ jobs:
         run: wget -qO- ${{secrets.AZURE_VM_IP}}/index.html | grep -iq "github"
 
   testing-network-health-check:
-    name: Testing the Deployed Web Server
+    name: Network Health Check
     runs-on: ubuntu-latest
     needs: [devdeploy]
     steps:
