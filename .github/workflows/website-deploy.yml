@@ -32,6 +32,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: websitefiles
+          path: src # When you try out, remove this line and try out, Troubleshoot
 
       - name: Copy the Public Folder to Ubuntu
         uses: marcodallasanta/ssh-scp-deploy@v1.2.0
