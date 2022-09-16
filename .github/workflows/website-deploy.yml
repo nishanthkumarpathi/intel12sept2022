@@ -6,12 +6,32 @@ on:
       - master
 
 jobs:
-  devdeploy:
-    name: Dev Env Deployment
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the Code
         uses: actions/checkout@v2.4.2
+
+      - name: Inject the Build Number
+        run: |
+          sed -i "s/APPVERSION/$GITHUB_RUN_NUMBER/g" src/health.html
+          sed -i "s/COMMITSHAVALUE/$GITHUB_SHA/g" src/health.html
+
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: websitefiles
+          path: src
+
+  devdeploy:
+    name: Dev Env Deployment
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - name: Download a Build Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: websitefiles
 
       - name: Copy the Public Folder to Ubuntu
         uses: marcodallasanta/ssh-scp-deploy@v1.2.0
@@ -30,8 +50,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: [devdeploy]
     steps:
-      - name: Using Wget we will Download the File
-        run: wget -qO- ${{secrets.AZURE_VM_IP}}/index.html | grep -iq "github"
+      - name: Verifying GITHUB_RUN_NUMBER
+        run: | 
+          wget -qO- ${{secrets.AZURE_VM_IP}}/health.html | grep -iq $GITHUB_RUN_NUMBER
+
+      - name: Verifying GITHUB_SHA
+        run: | 
+          wget -qO- ${{secrets.AZURE_VM_IP}}/health.html | grep -iq $GITHUB_SHA
 
   testing-network-health-check:
     name: Network Health Check
@@ -46,8 +71,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: [testing-application-health-check, testing-network-health-check]
     steps:
-      - name: Checkout the Code
-        uses: actions/checkout@v2.4.2
+      - name: Download a Build Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: websitefiles
 
       - name: Copy the Public Folder to Ubuntu
         uses: marcodallasanta/ssh-scp-deploy@v1.2.0
